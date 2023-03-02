@@ -1,9 +1,11 @@
+from progress_indicator import ProgressIndicator
 from wifi_connector import WiFiConnector
 
 class NetworkInitialiser:
-    def __init__(self, pico_wrapper, wifi_connector=None, hotspot = None):
+    def __init__(self, pico_wrapper, progress, wifi_connector=None, hotspot = None):
         self.pico_wrapper = pico_wrapper
-        self.wifi_connector = wifi_connector or WiFiConnector()
+        self.progress = progress or ProgressIndicator()
+        self.wifi_connector = wifi_connector or WiFiConnector(self.progress)
         self.hotspot = hotspot
 
     def initialise(self):

@@ -22,13 +22,17 @@ class MockWiFiConnection:
         if ssid == 'ssid' and password == '12345678':
             self.mock_wifi_connected = True
         return self.mock_wifi_connected
+    
+class MockProgress:
+    pass
 
 class TestWiFiInitialiser:
     def setup_method(self, test_method):
         self.mock_hotspot = MockHotSpot()
         self.mock_wifi_connection = MockWiFiConnection()
         self.mock_pico_wrapper = MockPicoWrapper()
-        self.initialiser = NetworkInitialiser(self.mock_pico_wrapper, self.mock_wifi_connection, self.mock_hotspot)
+        self.mock_progress = MockProgress()
+        self.initialiser = NetworkInitialiser(self.mock_pico_wrapper, self.mock_progress, self.mock_wifi_connection, self.mock_hotspot)
 
     def test_if_the_password_file_is_not_found_the_hotspot_is_launched(self):
         self.mock_pico_wrapper.password_file = None
