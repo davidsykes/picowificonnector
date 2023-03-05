@@ -1,10 +1,11 @@
+from pico_wrapper import PicoWrapper
 from progress_indicator import ProgressIndicator
 from wifi_connector import WiFiConnector
 from pico_access_point import PicoAccessPoint
 
 class NetworkInitialiser:
-    def __init__(self, pico_wrapper, progress, wifi_connector=None, access_point = None):
-        self.pico_wrapper = pico_wrapper
+    def __init__(self, pico_wrapper=None, progress=None, wifi_connector=None, access_point = None):
+        self.pico_wrapper = pico_wrapper or PicoWrapper()
         self.progress = progress or ProgressIndicator()
         self.wifi_connector = wifi_connector or WiFiConnector(self.progress)
         self.access_point = access_point
