@@ -9,8 +9,10 @@ class NetworkInitialiser:
         self.hotspot = hotspot
 
     def initialise(self):
+        self.progress.set_progress(1)
         credentials = self.read_credentials()
         if credentials is not None:
+            self.progress.set_progress(2)
             enabled = self.wifi_connector.connect_wifi(credentials[0], credentials[1])
             if enabled:
                 return
