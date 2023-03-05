@@ -1,12 +1,13 @@
 from progress_indicator import ProgressIndicator
 from wifi_connector import WiFiConnector
+from pico_access_point import PicoAccessPoint
 
 class NetworkInitialiser:
-    def __init__(self, pico_wrapper, progress, wifi_connector=None, hotspot = None):
+    def __init__(self, pico_wrapper, progress, wifi_connector=None, access_point = None):
         self.pico_wrapper = pico_wrapper
         self.progress = progress or ProgressIndicator()
         self.wifi_connector = wifi_connector or WiFiConnector(self.progress)
-        self.hotspot = hotspot
+        self.access_point = access_point
 
     def initialise(self):
         self.progress.set_progress(1)
@@ -16,8 +17,8 @@ class NetworkInitialiser:
             enabled = self.wifi_connector.connect_wifi(credentials[0], credentials[1])
             if enabled:
                 return
-        hotspot = self.hotspot or PicoHotspot()
-        hotspot.launch()
+        access_point = self.access_point or PicoAccessPoint(self.progress)
+        access_point.launch()
 
     def read_credentials(self):
         credential_text = self.pico_wrapper.read_file_data('ssid.txt')

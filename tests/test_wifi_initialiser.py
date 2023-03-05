@@ -9,11 +9,11 @@ class MockPicoWrapper:
         if file_name == 'ssid.txt':
             return self.password_file
 
-class MockHotSpot:
+class MockAccessPoint:
     def __init__(self):
-        self.hotspot_launched = False
+        self.access_point_launched = False
     def launch(self):
-        self.hotspot_launched = True
+        self.access_point_launched = True
 
 class MockWiFiConnection:
     def __init__(self):
@@ -29,18 +29,18 @@ class MockProgress:
 
 class TestWiFiInitialiser:
     def setup_method(self, test_method):
-        self.mock_hotspot = MockHotSpot()
+        self.mock_access_point = MockAccessPoint()
         self.mock_wifi_connection = MockWiFiConnection()
         self.mock_pico_wrapper = MockPicoWrapper()
         self.mock_progress = MockProgress()
-        self.initialiser = NetworkInitialiser(self.mock_pico_wrapper, self.mock_progress, self.mock_wifi_connection, self.mock_hotspot)
+        self.initialiser = NetworkInitialiser(self.mock_pico_wrapper, self.mock_progress, self.mock_wifi_connection, self.mock_access_point)
 
-    def test_if_the_password_file_is_not_found_the_hotspot_is_launched(self):
+    def test_if_the_password_file_is_not_found_the_access_point_is_launched(self):
         self.mock_pico_wrapper.password_file = None
 
         self.initialiser.initialise()
 
-        assert(self.mock_hotspot.hotspot_launched == True)
+        assert(self.mock_access_point.access_point_launched == True)
 
     def test_if_the_file_is_found_the_wifi_connection_is_initialised(self):
         self.mock_pico_wrapper.password_file = "ssid\n12345678"
@@ -49,9 +49,9 @@ class TestWiFiInitialiser:
 
         assert(self.mock_wifi_connection.mock_wifi_connected == True)
 
-    def test_if_the_network_intialisation_fails_the_hotspot_is_launched(self):
+    def test_if_the_network_intialisation_fails_the_access_point_is_launched(self):
         self.mock_pico_wrapper.password_file = "ssid\nxxx"
 
         self.initialiser.initialise()
 
-        assert(self.mock_hotspot.hotspot_launched == True)
+        assert(self.mock_access_point.access_point_launched == True)

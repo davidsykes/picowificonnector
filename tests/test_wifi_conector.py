@@ -15,6 +15,11 @@ class TestWiFiConnector:
         self.mock_progress = MockProgress()
         self.connector = WiFiConnector(self.mock_progress, 3, 0.001)
 
+    def test_connection_type_sta_if_is_made(self):
+        self.connector.connect_wifi('ssid','12345678')
+
+        assert(network.WLAN.type == network.STA_IF)
+
     def test_when_a_connection_can_not_be_made_false_is_returned(self):
         network.WLAN.status_values = [0,1,2,3]
 
