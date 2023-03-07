@@ -18,3 +18,7 @@ Progress values:
 4	Connection failed with negative status code
 5	WiFi connection succeeded
 6	Connection attempt timed out
+7	About to set up the access point
+8	Access point is active
+
+

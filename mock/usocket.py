@@ -1,6 +1,8 @@
 class Connection:
+    def __init__(self, http_request):
+        self.http_request = http_request
     def recv(self, len):
-        return ''
+        return self.http_request
     def send(self, data):
         pass
     def close(self):
@@ -14,7 +16,9 @@ class socket:
     def listen(self, n):
         pass
     def accept(self):
-        return (Connection(),'')
+        http_request = socket.http_requests.pop(0)
+        print('http_request', http_request)
+        return (Connection(http_request),'the mock network')
 
 class AF_INET:
     pass

@@ -28,7 +28,24 @@ class PicoAccessPoint:
             print('Got a connection from %s' % str(addr))
             request = conn.recv(1024)
             print('Content = %s' % str(request))
-            response = 'hello world'
-            print('response=', response)
-            conn.send(response)
+            if request == 'reset':
+               exit()
+            else:
+                response = """HTTP/1.0 200 OK
+Content-type: text/html
+
+<head>
+    <title>SSID Input</title>
+</head>
+<body>
+    <form >
+        SSID : <input type = "text" name = "ssid" />
+        <br>
+        Password: <input type = "password" name = "password" />
+        <input type = "submit" name = "submit" value = "Submit" />
+    </form>
+</body>
+"""
+                print('response=', response)
+                conn.send(response)
             conn.close()
