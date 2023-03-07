@@ -1,8 +1,9 @@
 try:
- import usocket as socket        #importing socket
+ import usocket as socket
 except:
  import socket
 import network
+import gc
 
 SSID = 'PICO'
 PASSWORD = '12345678'
@@ -12,12 +13,18 @@ class PicoAccessPoint:
         self.progress = progress
     def launch(self):
         self.progress.set_progress(7)
+        gc.collect()
         ap = network.WLAN(network.AP_IF)
         ap.config(essid=SSID, password=PASSWORD)
         ap.active(True)
 
         while ap.active() == False:
             pass
+        print('Connection is successful')
+        print(ap.ifconfig())
+
+
+
         self.progress.set_progress(8)
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   #creating socket object
@@ -39,13 +46,12 @@ Content-type: text/html
 </head>
 <body>
     <form >
-        SSID : <input type = "text" name = "ssid" />
+        SSID : <input type = "text" name = "ssid" style="height:500pxfont-size:14pt/>
         <br>
-        Password: <input type = "password" name = "password" />
+        Password: <input type = "password" name = "password" style="height:500pxfont-size:14pt/>
         <input type = "submit" name = "submit" value = "Submit" />
     </form>
 </body>
 """
-                print('response=', response)
                 conn.send(response)
             conn.close()
