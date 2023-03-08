@@ -4,12 +4,14 @@ except:
  import socket
 import network
 import gc
+from credentials_extractor import CredentialsExtractor
+from constants import SSID, PASSWORD, CREDENTIALS_FILE
 
-SSID = 'PICO'
-PASSWORD = '12345678'
+MIN_HTTP = 'HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n'
 
 class PicoAccessPoint:
-    def __init__(self, progress):
+    def __init__(self, pico_wrapper, progress):
+        self.pico_wrapper = pico_wrapper
         self.progress = progress
     def launch(self):
         self.progress.set_progress(7)
@@ -20,32 +22,28 @@ class PicoAccessPoint:
 
         while ap.active() == False:
             pass
-        print('Connection is successful')
-        print(ap.ifconfig())
-
-
-
+        print('Connection is successful:', ap.ifconfig())
         self.progress.set_progress(8)
 
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   #creating socket object
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind(('', 80))
         s.listen(5)
         while True:
             conn, addr = s.accept()
             print('Got a connection from %s' % str(addr))
             request = conn.recv(1024)
-            print('Content = %s' % str(request))
             if request == 'reset':
-               exit()
+               return
+            (ssid,password) = CredentialsExtractor.extract_credentials(request, self.pico_wrapper)
+            if ssid is not None:
+               self.pico_wrapper.store_credentials(CREDENTIALS_FILE, ssid, password)
+               conn.send(MIN_HTTP)
             else:
-                response = """HTTP/1.0 200 OK
-Content-type: text/html
-
-<head>
+                response = MIN_HTTP + """<head>
     <title>SSID Input</title>
 </head>
 <body>
-    <form >
+    <form>
         SSID : <input type = "text" name = "ssid" style="height:500pxfont-size:14pt/>
         <br>
         Password: <input type = "password" name = "password" style="height:500pxfont-size:14pt/>
