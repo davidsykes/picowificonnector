@@ -12,13 +12,12 @@ If no progress indicator is provided then the ProgressIndicator class is used, w
 
 Progress values:
 0   The initial value. The LED is permanently on
-1	About to look for existing credentials
+1	Look for existing credentials
 2	Credentials found, try and connect
-3	Connection in progress
+3	WiFi connection succeeded
 4	Connection failed with negative status code
-5	WiFi connection succeeded
-6	Connection attempt timed out
-7	About to set up the access point
-8	Access point is active
+5	Connection attempt timed out
+6	About to set up the access point
+7	Access point is active
 
 

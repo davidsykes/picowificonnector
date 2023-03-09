@@ -6,6 +6,7 @@ import network
 import gc
 from credentials_extractor import CredentialsExtractor
 from constants import SSID, PASSWORD, CREDENTIALS_FILE
+from progress_indicator import ProgressIndicator
 
 MIN_HTTP = 'HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n'
 
@@ -14,7 +15,7 @@ class PicoAccessPoint:
         self.pico_wrapper = pico_wrapper
         self.progress = progress
     def launch(self):
-        self.progress.set_progress(7)
+        self.progress.set_progress(ProgressIndicator.INITIALISING_ACCESS_POINT)
         gc.collect()
         ap = network.WLAN(network.AP_IF)
         ap.config(essid=SSID, password=PASSWORD)
@@ -23,7 +24,7 @@ class PicoAccessPoint:
         while ap.active() == False:
             pass
         print('Connection is successful:', ap.ifconfig())
-        self.progress.set_progress(8)
+        self.progress.set_progress(ProgressIndicator.ACCESS_POINT_READY)
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind(('', 80))

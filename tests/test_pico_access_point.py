@@ -36,7 +36,7 @@ class TestPicoAccessPoint:
         usocket.socket.http_requests = ['/', 'reset']
         self.ap.launch()
         
-        assert('<form>' in usocket.Connection.http_response)
+        assert('<form style' in usocket.Connection.http_response)
 
     def test_simple_credentials_are_stored(self):
         usocket.socket.http_requests = ['GET /?ssid=the_ssid&password=the_password&submit=Submit HTTP/1.1\r\n', 'reset']

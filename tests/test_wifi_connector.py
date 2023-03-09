@@ -2,6 +2,7 @@ import sys
 import network
 sys.path.append('../src')
 from wifi_connector import WiFiConnector
+from progress_indicator import ProgressIndicator
 
 class MockProgress:
     def __init__(self):
@@ -60,7 +61,7 @@ class TestWiFiConnector:
 
         self.connector.connect_wifi('ssid','12345678')
 
-        assert(self.mock_progress.value == 5)
+        assert(self.mock_progress.value == ProgressIndicator.CONNECTED)
 
     def test_if_wlan_connect_fails_the_progress_is_not_updated(self):
         network.WLAN.fail_on_connect = True
@@ -70,18 +71,18 @@ class TestWiFiConnector:
         except:
             pass
 
-        assert(self.mock_progress.value == 0)
+        assert(self.mock_progress.value == ProgressIndicator.CONNECTING)
 
     def test_if_connection_fails_progress_is_set(self):
         network.WLAN.status_values = [-1]
 
         self.connector.connect_wifi('ssid','12345678')
 
-        assert(self.mock_progress.value == 4)
+        assert(self.mock_progress.value == ProgressIndicator.NETWORK_ERROR)
 
     def test_if_connection_fails_progress_is_set(self):
         network.WLAN.status_values = [0]
 
         self.connector.connect_wifi('ssid','12345678')
 
-        assert(self.mock_progress.value == 6)
+        assert(self.mock_progress.value == ProgressIndicator.CONNECTING_TIMED_OUT)

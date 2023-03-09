@@ -12,17 +12,22 @@ class NetworkInitialiser:
         self.access_point = access_point
 
     def initialise(self):
-        self.progress.set_progress(1)
         credentials = self.read_credentials()
         if credentials is not None:
-            self.progress.set_progress(2)
+            self.pico_wrapper.log(''.join(['Attempting to connect to ',credentials[0], '-', credentials[1]]))
             enabled = self.wifi_connector.connect_wifi(credentials[0], credentials[1])
             if enabled:
+                self.pico_wrapper.log('Connected.')
                 return
+            else:
+                self.pico_wrapper.log('Connection failed.')
+        else:
+            self.pico_wrapper.log('The credentials file was not found.')
         access_point = self.access_point or PicoAccessPoint(self.pico_wrapper, self.progress)
         access_point.launch()
 
     def read_credentials(self):
+        self.progress.set_progress(ProgressIndicator.READ_CREDENTIALS)
         credential_text = self.pico_wrapper.read_file_data(CREDENTIALS_FILE)
         if credential_text is not None:
             return credential_text.splitlines()[0:2]

@@ -5,9 +5,12 @@ from network_initialiser import NetworkInitialiser
 class MockPicoWrapper:
     def __init__(self):
         self.password_file = None
+        self.logs = []
     def read_file_data(self, file_name):
         if file_name == 'ssid.txt':
             return self.password_file
+    def log(self, log):
+        self.logs.append(log)
 
 class MockAccessPoint:
     def __init__(self):
@@ -27,7 +30,7 @@ class MockProgress:
     def set_progress(self, value):
         pass
 
-class TestWiFiInitialiser:
+class TestNetworkInitialiser:
     def setup_method(self, test_method):
         self.mock_access_point = MockAccessPoint()
         self.mock_wifi_connection = MockWiFiConnection()
@@ -41,6 +44,7 @@ class TestWiFiInitialiser:
         self.initialiser.initialise()
 
         assert(self.mock_access_point.access_point_launched == True)
+        assert(self.mock_pico_wrapper.logs == ['The credentials file was not found.'])
 
     def test_if_the_file_is_found_the_wifi_connection_is_initialised(self):
         self.mock_pico_wrapper.password_file = "ssid\n12345678"
@@ -48,6 +52,7 @@ class TestWiFiInitialiser:
         self.initialiser.initialise()
 
         assert(self.mock_wifi_connection.mock_wifi_connected == True)
+        assert(self.mock_pico_wrapper.logs == ['Attempting to connect to ssid-12345678','Connected.'])
 
     def test_if_the_network_intialisation_fails_the_access_point_is_launched(self):
         self.mock_pico_wrapper.password_file = "ssid\nxxx"
@@ -55,3 +60,4 @@ class TestWiFiInitialiser:
         self.initialiser.initialise()
 
         assert(self.mock_access_point.access_point_launched == True)
+        assert(self.mock_pico_wrapper.logs == ['Attempting to connect to ssid-xxx','Connection failed.'])
