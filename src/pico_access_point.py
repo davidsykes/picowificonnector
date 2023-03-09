@@ -31,7 +31,7 @@ class PicoAccessPoint:
         while True:
             conn, addr = s.accept()
             print('Got a connection from %s' % str(addr))
-            request = conn.recv(1024)
+            request = conn.recv(1024).decode()
             if request == 'reset':
                return
             (ssid,password) = CredentialsExtractor.extract_credentials(request, self.pico_wrapper)

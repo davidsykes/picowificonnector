@@ -10,4 +10,4 @@ class MockPicoWrapper:
         self.files[path] = ssid + "\n" + password
 
     def log(self, log):
-        pass
+        print('LOG:', log)

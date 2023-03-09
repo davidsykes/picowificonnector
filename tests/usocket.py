@@ -2,7 +2,7 @@ class Connection:
     def __init__(self, http_request):
         self.http_request = http_request
     def recv(self, len):
-        return self.http_request
+        return self.http_request.encode()
     def send(self, data):
         Connection.http_response = data
     def close(self):
