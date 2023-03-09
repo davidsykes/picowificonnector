@@ -44,10 +44,13 @@ class PicoAccessPoint:
 </head>
 <body>
     <form>
-        SSID : <input type = "text" name = "ssid" style="height:500pxfont-size:14pt/>
+        SSID:<br>
+        <input type="text" name="ssid" style="height:60px;font-size:30pt" />
         <br>
-        Password: <input type = "password" name = "password" style="height:500pxfont-size:14pt/>
-        <input type = "submit" name = "submit" value = "Submit" />
+        Password:<br>
+        <input type="password" name="password" style="height:60px;font-size:30pt" />
+        <br>
+        <input type="submit" name="submit" value="Submit" />
     </form>
 </body>
 """
