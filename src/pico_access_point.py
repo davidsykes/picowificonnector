@@ -39,6 +39,7 @@ class PicoAccessPoint:
             if ssid is not None:
                self.pico_wrapper.store_credentials(CREDENTIALS_FILE, ssid, password)
                conn.send(MIN_HTTP)
+               self.pico_wrapper.reset()
             else:
                 response = MIN_HTTP + """<head>
     <title>SSID Input</title>

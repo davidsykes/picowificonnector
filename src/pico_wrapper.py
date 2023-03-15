@@ -16,7 +16,13 @@ class PicoWrapper:
         file.write(ssid + "\n" + password)
         file.close()
         
-    def log(self, l):
+    def log(self, l, m=None):
         file = open(LOG_FILE, 'a')
         file.write(l + "\n")
+        if m is not None:
+            file.write(m + "\n")
         file.close()
+
+    def reset(self):
+        import machine
+        machine.reset()

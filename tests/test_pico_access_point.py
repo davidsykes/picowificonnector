@@ -11,6 +11,8 @@ class MockPicoWrapper:
         pass        
     def store_credentials(self, path, ssid, password):
         self.files[path] = ssid + "\n" + password
+    def reset(self):
+        self.pico_was_reset = True
 
 class MockProgress:
     def __init__(self):
@@ -44,3 +46,9 @@ class TestPicoAccessPoint:
     
         assert(self.pico_wrapper.files['ssid.txt'] == "the_ssid\nthe_password")
         assert('OK' in usocket.Connection.http_response)
+
+    def test_when_credentials_are_supplied_the_pico_is_reset(self):
+        usocket.socket.http_requests = ['GET /?ssid=the_ssid&password=the_password&submit=Submit HTTP/1.1\r\n', 'reset']
+        self.ap.launch()
+    
+        assert(self.pico_wrapper.pico_was_reset == True)

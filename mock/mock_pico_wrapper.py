@@ -11,3 +11,6 @@ class MockPicoWrapper:
 
     def log(self, log):
         print('LOG:', log)
+
+    def reset(self):
+        print('RESET')
