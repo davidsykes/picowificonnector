@@ -7,8 +7,9 @@ from progress_indicator import ProgressIndicator
 class MockProgress:
     def __init__(self):
         self.value = 0
-    def set_progress(self, value):
+    def set_progress(self, value, log=None):
         self.value = value
+        self.log = log
 
 class TestWiFiConnector:
     def setup_method(self, test_method):
@@ -62,6 +63,7 @@ class TestWiFiConnector:
         self.connector.connect_wifi('ssid','12345678')
 
         assert(self.mock_progress.value == ProgressIndicator.CONNECTED)
+        assert(self.mock_progress.log == 'ip address')
 
     def test_if_wlan_connect_fails_the_progress_is_not_updated(self):
         network.WLAN.fail_on_connect = True

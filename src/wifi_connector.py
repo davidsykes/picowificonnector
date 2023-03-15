@@ -21,7 +21,8 @@ class WiFiConnector:
                 self.progress.set_progress(ProgressIndicator.NETWORK_ERROR)
                 return False
             if status == 3:
-                self.progress.set_progress(ProgressIndicator.CONNECTED)
+                status = wlan.ifconfig()
+                self.progress.set_progress(ProgressIndicator.CONNECTED, status[0])
                 return True
             number_of_tries -= 1
             time.sleep(self.sleep_time)
