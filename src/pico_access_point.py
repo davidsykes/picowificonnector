@@ -39,20 +39,25 @@ class PicoAccessPoint:
             if ssid is not None:
                self.pico_wrapper.store_credentials(CREDENTIALS_FILE, ssid, password)
                conn.send(MIN_HTTP)
+               conn.close()
                self.pico_wrapper.reset()
             else:
                 response = MIN_HTTP + """<head>
     <title>SSID Input</title>
 </head>
 <body>
-    <form style="height:60px;font-size:30pt">
+    <form style="height:120px;font-size:70pt">
         SSID:<br>
-        <input type="text" name="ssid" />
+        <input type="text" name="ssid" style="height:120px;font-size:70pt"/>
         <br>
         Password:<br>
-        <input type="password" name="password" />
+        <input type="password" name="password" style="height:120px;font-size:70pt"/>
+        <br />
+        <input type="checkbox" id="show" name="show" value="y" style="height:120px;width:120px"/>
+        Report details?
         <br>
-        <input type="submit" name="submit" value="Submit" />
+        <br>
+        <input type="submit" name="submit" value="Submit" style="height:120px;font-size:70pt"/>
     </form>
 </body>
 """

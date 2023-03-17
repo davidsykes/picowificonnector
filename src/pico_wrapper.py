@@ -17,12 +17,13 @@ class PicoWrapper:
         file.close()
         
     def log(self, l, m=None):
+        s = l + "\n" + ('' if m is None else (m + "\n"))
         file = open(LOG_FILE, 'a')
-        file.write(l + "\n")
-        if m is not None:
-            file.write(m + "\n")
+        file.write(s)
         file.close()
+        print(s)
 
     def reset(self):
+        self.log('Reset')
         import machine
         machine.reset()

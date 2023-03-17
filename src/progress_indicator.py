@@ -32,7 +32,7 @@ class ProgressIndicator:
 			return
 		self.set_up_new_sequence()
 		
-	def set_progress(self, progress):
+	def set_progress(self, progress, m=None):
 		self.progress = progress
 		self.set_up_new_sequence()
 
