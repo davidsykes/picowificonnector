@@ -27,7 +27,7 @@ class PicoAccessPoint:
 
         while ap.active() == False:
             pass
-        self.pico_wrapper.print('Connection is successful: %s' % ap.ifconfig())
+        self.pico_wrapper.print('Connection is successful: %s' % str(ap.ifconfig()))
         self.progress.set_progress(ProgressIndicator.ACCESS_POINT_READY)
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
