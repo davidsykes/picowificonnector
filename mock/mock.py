@@ -5,7 +5,7 @@ from mock_pico_wrapper import MockPicoWrapper
 import usocket
 
 class MockProgressIndicator:
-    def set_progress(self, value):
+    def set_progress(self, message):
         pass
 
 def first_call_no_ssid_information_exists():

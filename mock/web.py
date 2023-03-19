@@ -8,7 +8,7 @@ hostName = "localhost"
 serverPort = 8080
 
 class MockProgressIndicator:
-    def set_progress(self, value):
+    def set_progress(self, message):
         pass
 
 class MockPicoWrapper:

@@ -27,7 +27,7 @@ class MockWiFiConnection:
         return self.mock_wifi_connected
     
 class MockProgress:
-    def set_progress(self, value):
+    def set_progress(self, message):
         pass
 
 class TestNetworkInitialiser:
