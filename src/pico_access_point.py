@@ -4,16 +4,20 @@ except:
  import socket
 import network
 import gc
-from credentials_extractor import CredentialsExtractor
 from constants import SSID, PASSWORD, CREDENTIALS_FILE
 from progress_indicator import ProgressIndicator
 
 MIN_HTTP = 'HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n'
+HEAD_INPUT = "<head><title>SSID Input</title></head><body>"
+HEAD_ACK = "<head><title>Credentials Accepted</title></head><body>"
+DIV = '<div style="height:120px;font-size:70pt">'
 
 class PicoAccessPoint:
-    def __init__(self, pico_wrapper, progress):
+    def __init__(self, pico_wrapper, progress, credentials_extractor):
         self.pico_wrapper = pico_wrapper
         self.progress = progress
+        self.credentials_extractor = credentials_extractor
+
     def launch(self):
         self.progress.set_progress(ProgressIndicator.INITIALISING_ACCESS_POINT)
         gc.collect()
@@ -23,7 +27,7 @@ class PicoAccessPoint:
 
         while ap.active() == False:
             pass
-        print('Connection is successful:', ap.ifconfig())
+        self.pico_wrapper.print('Connection is successful: %s' % ap.ifconfig())
         self.progress.set_progress(ProgressIndicator.ACCESS_POINT_READY)
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,21 +35,19 @@ class PicoAccessPoint:
         s.listen(5)
         while True:
             conn, addr = s.accept()
-            print('Got a connection from %s' % str(addr))
+            self.pico_wrapper.print('Got a connection from %s' % str(addr))
             request = conn.recv(1024).decode()
             if request == 'reset':
                return
-            (ssid,password) = CredentialsExtractor.extract_credentials(request, self.pico_wrapper)
+            (ssid,password,show) = self.credentials_extractor.extract_credentials(request)
+
             if ssid is not None:
-               self.pico_wrapper.store_credentials(CREDENTIALS_FILE, ssid, password)
-               conn.send(MIN_HTTP)
-               conn.close()
-               self.pico_wrapper.reset()
+                self.pico_wrapper.store_credentials(CREDENTIALS_FILE, ssid, password)
+                self.report_success(conn, ssid, password, show)
+                conn.close()
+                self.pico_wrapper.reset()
             else:
-                response = MIN_HTTP + """<head>
-    <title>SSID Input</title>
-</head>
-<body>
+                response = MIN_HTTP + HEAD_INPUT + """
     <form style="height:120px;font-size:70pt">
         SSID:<br>
         <input type="text" name="ssid" style="height:120px;font-size:70pt"/>
@@ -63,3 +65,10 @@ class PicoAccessPoint:
 """
                 conn.send(response)
             conn.close()
+
+    def report_success(self, conn, ssid, password, show):
+        if show:
+            response = ''.join([MIN_HTTP, HEAD_ACK, DIV, 'OK<br>SSID: ', ssid, '<br>Password: ', password, '</div>'])
+        else:
+            response = ''.join([MIN_HTTP, HEAD_ACK, DIV, 'OK</div>'])
+        conn.send(response)

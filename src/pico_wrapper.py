@@ -27,3 +27,6 @@ class PicoWrapper:
         self.log('Reset')
         import machine
         machine.reset()
+
+    def print(self, p):
+        print(p)

@@ -3,13 +3,15 @@ from progress_indicator import ProgressIndicator
 from wifi_connector import WiFiConnector
 from pico_access_point import PicoAccessPoint
 from constants import CREDENTIALS_FILE
+from credentials_extractor import CredentialsExtractor
 
 class NetworkInitialiser:
-    def __init__(self, pico_wrapper=None, progress=None, wifi_connector=None, access_point = None):
+    def __init__(self, pico_wrapper=None, progress=None, wifi_connector=None, access_point = None, credentials_extractor = None):
         self.pico_wrapper = pico_wrapper or PicoWrapper()
         self.progress = progress or ProgressIndicator()
         self.wifi_connector = wifi_connector or WiFiConnector(self.progress)
         self.access_point = access_point
+        self.credentials_extractor = credentials_extractor or CredentialsExtractor(self.pico_wrapper)
 
     def initialise(self):
         credentials = self.read_credentials()
@@ -23,7 +25,7 @@ class NetworkInitialiser:
                 self.pico_wrapper.log('Connection failed.')
         else:
             self.pico_wrapper.log('The credentials file was not found.')
-        access_point = self.access_point or PicoAccessPoint(self.pico_wrapper, self.progress)
+        access_point = self.access_point or PicoAccessPoint(self.pico_wrapper, self.progress, self.credentials_extractor)
         access_point.launch()
 
     def read_credentials(self):

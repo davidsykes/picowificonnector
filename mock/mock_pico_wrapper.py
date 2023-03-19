@@ -14,3 +14,6 @@ class MockPicoWrapper:
 
     def reset(self):
         print('RESET')
+
+    def print(self, p):
+        print(p)
