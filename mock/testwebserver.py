@@ -30,17 +30,17 @@ class MockCredentialsExtractor:
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/ssidinput':
-            ap = PicoAccessPoint(MockPicoWrapper(), MockProgressIndicator(), MockCredentialsExtractor(None,None,None))
+            ap = PicoAccessPoint('ssid', 'password', MockPicoWrapper(), MockProgressIndicator(), MockCredentialsExtractor(None,None,None))
             usocket.socket.http_requests = [b'/',b'reset']
             ap.launch()
             self.wfile.write(bytes(usocket.Connection.http_response, "utf-8"))
         elif self.path == '/ssidwithoutdetails':
-            ap = PicoAccessPoint(MockPicoWrapper(), MockProgressIndicator(), MockCredentialsExtractor('ssid','pswd',False))
+            ap = PicoAccessPoint('ssid', 'password', MockPicoWrapper(), MockProgressIndicator(), MockCredentialsExtractor('ssid','pswd',False))
             usocket.socket.http_requests = [b'GET /etc',b'reset']
             ap.launch()
             self.wfile.write(bytes(usocket.Connection.http_response, "utf-8"))
         elif self.path == '/ssidwithdetails':
-            ap = PicoAccessPoint(MockPicoWrapper(), MockProgressIndicator(), MockCredentialsExtractor('ssid','pswd',True))
+            ap = PicoAccessPoint('ssid', 'password', MockPicoWrapper(), MockProgressIndicator(), MockCredentialsExtractor('ssid','pswd',True))
             usocket.socket.http_requests = [b'GET /etc',b'reset']
             ap.launch()
             self.wfile.write(bytes(usocket.Connection.http_response, "utf-8"))

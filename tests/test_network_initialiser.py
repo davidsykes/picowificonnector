@@ -36,7 +36,7 @@ class TestNetworkInitialiser:
         self.mock_wifi_connection = MockWiFiConnection()
         self.mock_pico_wrapper = MockPicoWrapper()
         self.mock_progress = MockProgress()
-        self.initialiser = NetworkInitialiser(self.mock_pico_wrapper, self.mock_progress, self.mock_wifi_connection, self.mock_access_point)
+        self.initialiser = NetworkInitialiser('ssid', 'pwd', self.mock_pico_wrapper, self.mock_progress, self.mock_wifi_connection, self.mock_access_point)
 
     def test_if_the_password_file_is_not_found_the_access_point_is_launched(self):
         self.mock_pico_wrapper.password_file = None

@@ -4,7 +4,7 @@ except:
  import socket
 import network
 import gc
-from constants import SSID, PASSWORD, CREDENTIALS_FILE
+from constants import CREDENTIALS_FILE
 from progress_indicator import ProgressIndicator
 
 MIN_HTTP = 'HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n'
@@ -13,7 +13,9 @@ HEAD_ACK = "<head><title>Credentials Accepted</title></head><body>"
 DIV = '<div style="height:120px;font-size:70pt">'
 
 class PicoAccessPoint:
-    def __init__(self, pico_wrapper, progress, credentials_extractor):
+    def __init__(self, ssid, password, pico_wrapper, progress, credentials_extractor):
+        self.ssid = ssid
+        self.password = password
         self.pico_wrapper = pico_wrapper
         self.progress = progress
         self.credentials_extractor = credentials_extractor
@@ -22,7 +24,7 @@ class PicoAccessPoint:
         self.progress.set_progress(ProgressIndicator.INITIALISING_ACCESS_POINT)
         gc.collect()
         ap = network.WLAN(network.AP_IF)
-        ap.config(essid=SSID, password=PASSWORD)
+        ap.config(essid=self.ssid, password=self.password)
         ap.active(True)
 
         while ap.active() == False:

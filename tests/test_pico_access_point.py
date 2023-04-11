@@ -33,7 +33,7 @@ class TestPicoAccessPoint:
         self.pico_wrapper = MockPicoWrapper()
         self.mock_progress = MockProgress()
         self.mock_credentials_extractor = MockCredentialsExtractor()
-        self.ap = PicoAccessPoint(self.pico_wrapper, self.mock_progress, self.mock_credentials_extractor)
+        self.ap = PicoAccessPoint('PICO', '12345678', self.pico_wrapper, self.mock_progress, self.mock_credentials_extractor)
 
     def test_an_access_point_is_initialised(self):
         usocket.socket.http_requests = ['reset']
