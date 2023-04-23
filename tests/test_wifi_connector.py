@@ -17,45 +17,45 @@ class TestWiFiConnector:
         self.mock_progress = MockProgress()
         self.connector = WiFiConnector(self.mock_progress, 3, 0.001)
 
-    def test_connection_type_sta_if_is_made(self):
+    def test_a_connection_of_type_sta_if_is_made(self):
         self.connector.connect_wifi('ssid','12345678')
 
         assert(network.WLAN.type == network.STA_IF)
 
-    def test_when_a_connection_can_not_be_made_false_is_returned(self):
+    def test_when_a_connection_can_not_be_made_None_is_returned(self):
         network.WLAN.status_values = [0,1,2,3]
 
         ret = self.connector.connect_wifi('ssid','12345678')
 
-        assert(ret == False)
+        assert(ret is None)
 
     def test_the_connector_tries_several_times(self):
         network.WLAN.status_values = [1,2,3]
 
         ret = self.connector.connect_wifi('ssid','12345678')
 
-        assert(ret == True)
+        assert(ret == 'ip address')
 
     def test_if_status_is_negative_the_connection_fails(self):
         network.WLAN.status_values = [-1,3]
 
         ret = self.connector.connect_wifi('ssid','12345678')
 
-        assert(ret == False)
+        assert(ret is None)
 
     def test_if_status_becomes_3_the_connection_succeeds(self):
         network.WLAN.status_values = [1,3]
 
         ret = self.connector.connect_wifi('ssid','12345678')
 
-        assert(ret == True)
+        assert(ret == 'ip address')
 
     def test_if_status_does_not_connect_the_connection_fails(self):
         network.WLAN.status_values = [1,1,1,1,1,1,1,1,1,1,1,1,1]
 
         ret = self.connector.connect_wifi('ssid','12345678')
 
-        assert(ret == False)
+        assert(ret is None)
 
     def test_if_connect_succeeds_progress_is_set(self):
         network.WLAN.status_values = [3]
