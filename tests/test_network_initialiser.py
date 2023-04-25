@@ -3,14 +3,23 @@ sys.path.append('../src')
 from network_initialiser import NetworkInitialiser
 
 class MockPicoWrapper:
+    pass
     def __init__(self):
-        self.password_file = None
         self.logs = []
-    def read_file_data(self, file_name):
-        if file_name == 'ssid.txt':
-            return self.password_file
     def log(self, log):
         self.logs.append(log)
+    
+class MockProgress:
+    def set_progress(self, message):
+        pass
+
+class MockWiFiConnection:
+    def __init__(self):
+        self.ip_address = None
+    def connect_wifi(self, ssid, password):
+        if ssid == 'the ssid' and password == '12345678':
+            self.ip_address = 'the ip address'
+        return self.ip_address
 
 class MockAccessPoint:
     def __init__(self):
@@ -18,46 +27,55 @@ class MockAccessPoint:
     def launch(self):
         self.access_point_launched = True
 
-class MockWiFiConnection:
-    def __init__(self):
-        self.mock_wifi_connected = False
-    def connect_wifi(self, ssid, password):
-        if ssid == 'ssid' and password == '12345678':
-            self.mock_wifi_connected = True
-        return self.mock_wifi_connected
-    
-class MockProgress:
-    def set_progress(self, message):
-        pass
+class MockProgramOptionsReader:
+    def read_options(self):
+        return self.options
 
 class TestNetworkInitialiser:
     def setup_method(self, test_method):
-        self.mock_access_point = MockAccessPoint()
-        self.mock_wifi_connection = MockWiFiConnection()
         self.mock_pico_wrapper = MockPicoWrapper()
         self.mock_progress = MockProgress()
-        self.initialiser = NetworkInitialiser('ssid', 'pwd', self.mock_pico_wrapper, self.mock_progress, self.mock_wifi_connection, self.mock_access_point)
+        self.mock_wifi_connection = MockWiFiConnection()
+        self.mock_access_point = MockAccessPoint()
+        self.mock_program_options_reader = MockProgramOptionsReader()
+        self.initialiser = NetworkInitialiser('ssid', 'pwd', self.mock_pico_wrapper, self.mock_progress, self.mock_wifi_connection, self.mock_access_point, None, self.mock_program_options_reader)
 
-    def test_if_the_password_file_is_not_found_the_access_point_is_launched(self):
-        self.mock_pico_wrapper.password_file = None
+    def test_if_the_options_file_is_not_found_the_access_point_is_launched(self):
+        self.mock_program_options_reader.options = None
 
         self.initialiser.initialise()
 
         assert(self.mock_access_point.access_point_launched == True)
-        assert(self.mock_pico_wrapper.logs == ['The credentials file was not found.'])
+        assert(self.mock_pico_wrapper.logs == ['The options file was not found.'])
 
-    def test_if_the_file_is_found_the_wifi_connection_is_initialised(self):
-        self.mock_pico_wrapper.password_file = "ssid\n12345678"
+    def test_if_the_options_file_is_found_the_wifi_connection_is_initialised(self):
+        self.mock_program_options_reader.options = {'ssid': 'the ssid', 'password': '12345678'}
 
         self.initialiser.initialise()
 
-        assert(self.mock_wifi_connection.mock_wifi_connected == True)
-        assert(self.mock_pico_wrapper.logs == ['Attempting to connect to ssid-12345678','Connected.'])
+        assert(self.mock_wifi_connection.ip_address == 'the ip address')
+        assert(self.mock_pico_wrapper.logs == ['Attempting to connect to the ssid-12345678','Connected as the ip address.'])
+
+    def test_if_the_connection_succeeds_the_program_options_are_returned(self):
+        self.mock_program_options_reader.options = {'ssid': 'the ssid', 'password': '12345678', 'option1': 'option 1' }
+
+        options = self.initialiser.initialise()
+
+        assert(options['ssid'] == 'the ssid')
+        assert(options['password'] == '12345678')
+        assert(options['option1'] == 'option 1')
+
+    def test_if_the_connection_succeeds_the_program_options_include_the_ip_address(self):
+        self.mock_program_options_reader.options = {'ssid': 'the ssid', 'password': '12345678', 'option1': 'option 1' }
+
+        options = self.initialiser.initialise()
+
+        assert(options['ip'] == 'the ip address')
 
     def test_if_the_network_intialisation_fails_the_access_point_is_launched(self):
-        self.mock_pico_wrapper.password_file = "ssid\nxxx"
+        self.mock_program_options_reader.options = {'ssid': 'the ssid', 'password': 'xxx', 'option1': 'option 1' }
 
         self.initialiser.initialise()
 
         assert(self.mock_access_point.access_point_launched == True)
-        assert(self.mock_pico_wrapper.logs == ['Attempting to connect to ssid-xxx','Connection failed.'])
+        assert(self.mock_pico_wrapper.logs == ['Attempting to connect to the ssid-xxx','Connection failed.'])

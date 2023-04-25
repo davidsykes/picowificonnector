@@ -1,10 +1,10 @@
 import re
 
-class CredentialsExtractor:
+class UrlOptionsExtractor:
     def __init__(self, logger):
         self.logger = logger
 
-    def extract_credentials(self, request):
+    def extract_options(self, request):
         if request:
             line = request.splitlines()[0]
             self.logger.log(''.join(['Credentials: "', line, '"']))

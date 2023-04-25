@@ -1,4 +1,4 @@
-from constants import CREDENTIALS_FILE, LOG_FILE
+from constants import LOG_FILE
 
 class PicoWrapper:
     def read_file_data(self, path):
