@@ -14,33 +14,39 @@ class MockProgressIndicator:
 class MockPicoWrapper:
     def log(self, l):
         print(l)
-    def store_credentials(self, path, ssid, password):
+    def store_parameters(self, path, ssid, password):
         pass
     def reset(self):
         pass
     def print(self, p):
         pass
 
-class MockCredentialsExtractor:
+class MockParametersExtractor:
     def __init__(self, ssid, password, show):
-        self.return_value = (ssid, password, show)
-    def extract_credentials(self, request):
-        return self.return_value
+        self.parameters = {}
+        if ssid is not None:
+            self.parameters['ssid'] = ssid
+        if password is not None:
+            self.parameters['password'] = password
+        if show:
+            self.parameters['show'] = show
+    def extract_parameters(self, request):
+        return self.parameters
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/ssidinput':
-            ap = PicoAccessPoint('ssid', 'password', MockPicoWrapper(), MockProgressIndicator(), MockCredentialsExtractor(None,None,None))
+            ap = PicoAccessPoint('ssid', 'password', MockPicoWrapper(), MockProgressIndicator(), MockParametersExtractor(None,None,None))
             usocket.socket.http_requests = [b'/',b'reset']
             ap.launch()
             self.wfile.write(bytes(usocket.Connection.http_response, "utf-8"))
         elif self.path == '/ssidwithoutdetails':
-            ap = PicoAccessPoint('ssid', 'password', MockPicoWrapper(), MockProgressIndicator(), MockCredentialsExtractor('ssid','pswd',False))
+            ap = PicoAccessPoint('ssid', 'password', MockPicoWrapper(), MockProgressIndicator(), MockParametersExtractor('ssid','pswd',False))
             usocket.socket.http_requests = [b'GET /etc',b'reset']
             ap.launch()
             self.wfile.write(bytes(usocket.Connection.http_response, "utf-8"))
         elif self.path == '/ssidwithdetails':
-            ap = PicoAccessPoint('ssid', 'password', MockPicoWrapper(), MockProgressIndicator(), MockCredentialsExtractor('ssid','pswd',True))
+            ap = PicoAccessPoint('ssid', 'password', MockPicoWrapper(), MockProgressIndicator(), MockParametersExtractor('ssid','pswd',True))
             usocket.socket.http_requests = [b'GET /etc',b'reset']
             ap.launch()
             self.wfile.write(bytes(usocket.Connection.http_response, "utf-8"))

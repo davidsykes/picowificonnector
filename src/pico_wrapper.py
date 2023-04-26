@@ -1,7 +1,7 @@
 from constants import LOG_FILE
 
 class PicoWrapper:
-    def read_file_data(self, path):
+    def read_parameters(self, path):
         try:
             file = open(path, 'r')
             content = file.read()
@@ -11,9 +11,10 @@ class PicoWrapper:
         except OSError:
             return None
         
-    def store_credentials(self, path, ssid, password):
+    def store_parameters(self, path, parameters):
         file = open(path, 'w')
-        file.write(ssid + "\n" + password)
+        for key, value in parameters.items():
+            file.write(''.join([key, '=', value]))
         file.close()
         
     def log(self, l, m=None):

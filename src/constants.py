@@ -1,2 +1,2 @@
-CREDENTIALS_FILE = 'ssid.txt'
+PROGRAM_OPTIONS_FILE = 'options.txt'
 LOG_FILE = 'log.txt'

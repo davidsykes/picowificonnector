@@ -4,21 +4,21 @@ except:
  import socket
 import network
 import gc
-from constants import CREDENTIALS_FILE
+from constants import PROGRAM_OPTIONS_FILE
 from progress_indicator import ProgressIndicator
 
 MIN_HTTP = 'HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n'
 HEAD_INPUT = "<head><title>SSID Input</title></head><body>"
-HEAD_ACK = "<head><title>Credentials Accepted</title></head><body>"
+HEAD_ACK = "<head><title>Parameters Accepted</title></head><body>"
 DIV = '<div style="height:120px;font-size:70pt">'
 
 class PicoAccessPoint:
-    def __init__(self, ssid, password, pico_wrapper, progress, credentials_extractor):
+    def __init__(self, ssid, password, pico_wrapper, progress, parameters_extractor):
         self.ssid = ssid
         self.password = password
         self.pico_wrapper = pico_wrapper
         self.progress = progress
-        self.credentials_extractor = credentials_extractor
+        self.parameters_extractor = parameters_extractor
 
     def launch(self):
         self.progress.set_progress(ProgressIndicator.INITIALISING_ACCESS_POINT)
@@ -41,11 +41,11 @@ class PicoAccessPoint:
             request = conn.recv(1024).decode()
             if request == 'reset':
                return
-            (ssid,password,show) = self.credentials_extractor.extract_credentials(request)
+            parameters = self.parameters_extractor.extract_parameters(request)
 
-            if ssid is not None:
-                self.pico_wrapper.store_credentials(CREDENTIALS_FILE, ssid, password)
-                self.report_success(conn, ssid, password, show)
+            if 'ssid' in parameters:
+                self.pico_wrapper.store_parameters(PROGRAM_OPTIONS_FILE, parameters)
+                self.report_success(conn, parameters)
                 conn.close()
                 self.pico_wrapper.reset()
             else:
@@ -68,8 +68,10 @@ class PicoAccessPoint:
                 conn.send(response)
             conn.close()
 
-    def report_success(self, conn, ssid, password, show):
-        if show:
+    def report_success(self, conn, parameters):
+        ssid = parameters['ssid']
+        password = parameters['password']
+        if 'show' in parameters:
             response = ''.join([MIN_HTTP, HEAD_ACK, DIV, 'OK<br>SSID: ', ssid, '<br>Password: ', password, '</div>'])
         else:
             response = ''.join([MIN_HTTP, HEAD_ACK, DIV, 'OK</div>'])
