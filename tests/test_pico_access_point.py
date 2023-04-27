@@ -10,7 +10,7 @@ class MockPicoWrapper:
         self.files = {}
     def log(self, log):
         pass        
-    def store_parameters(self, path, parameters):
+    def write_parameters_to_file(self, path, parameters):
         params = ''
         for key, value in parameters.items():
             params = params + ''.join([key, '=', value, '\n'])

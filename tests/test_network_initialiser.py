@@ -28,7 +28,7 @@ class MockAccessPoint:
         self.access_point_launched = True
 
 class MockProgramOptionsReader:
-    def read_options(self):
+    def read_program_options(self):
         return self.options
 
 class TestNetworkInitialiser:

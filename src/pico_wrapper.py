@@ -11,7 +11,7 @@ class PicoWrapper:
         except OSError:
             return None
         
-    def store_parameters(self, path, parameters):
+    def write_parameters_to_file(self, path, parameters):
         file = open(path, 'w')
         for key, value in parameters.items():
             file.write(''.join([key, '=', value]))

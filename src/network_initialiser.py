@@ -13,11 +13,11 @@ class NetworkInitialiser:
         self.progress = progress or ProgressIndicator()
         self.wifi_connector = wifi_connector or WiFiConnector(self.progress)
         self.access_point = access_point
-        self.url_options_extractor = parameters_extractor or UrlParametersExtractor(self.pico_wrapper)
+        self.parameters_extractor = parameters_extractor or UrlParametersExtractor(self.pico_wrapper)
         self.program_options_reader = program_options_reader or ProgramOptionsReader(self.pico_wrapper)
 
     def initialise(self):
-        options = self.program_options_reader.read_options()
+        options = self.program_options_reader.read_program_options()
         if options is not None:
             ssid = options['ssid']
             password = options['password']

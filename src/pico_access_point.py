@@ -44,7 +44,7 @@ class PicoAccessPoint:
             parameters = self.parameters_extractor.extract_parameters(request)
 
             if 'ssid' in parameters:
-                self.pico_wrapper.store_parameters(PROGRAM_OPTIONS_FILE, parameters)
+                self.pico_wrapper.write_parameters_to_file(PROGRAM_OPTIONS_FILE, parameters)
                 self.report_success(conn, parameters)
                 conn.close()
                 self.pico_wrapper.reset()

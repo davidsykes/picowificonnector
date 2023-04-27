@@ -14,7 +14,7 @@ class MockProgressIndicator:
 class MockPicoWrapper:
     def log(self, l):
         print(l)
-    def store_parameters(self, path, ssid, password):
+    def write_parameters_to_file(self, path, parameters):
         pass
     def reset(self):
         pass

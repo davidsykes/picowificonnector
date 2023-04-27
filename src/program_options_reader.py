@@ -9,7 +9,7 @@ class ProgramOptionsReader:
         if options_text is not None:
             return self.parse_options(options_text)
 
-    def parse_options(self, options_text):
+    def _parse_options(self, options_text):
         lines = options_text.splitlines()
         options = {}
         for line in lines:
@@ -18,7 +18,7 @@ class ProgramOptionsReader:
                 options[option[0]] = option[1]
         return options
 
-    def extract_option(self, option):
+    def _extract_option(self, option):
         parts = option.split('=',1)
         if len(parts) == 2:
             return parts

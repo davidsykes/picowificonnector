@@ -6,14 +6,17 @@ class MockPicoWrapper:
     def read_file_data(self, path):
         return self.parameters
 
-    def store_parameters(self, path, ssid, password):
-        self.files[path] = ssid + "\n" + password
+    def write_parameters_to_file(self, path, parameters):
+        params = ''
+        for key, value in parameters.items():
+            params = params + ''.join([key, '=', value, '\n'])
+        self.files[path] = params
 
     def log(self, log):
-        print('LOG:', log)
+        print('    log:', log)
 
     def reset(self):
         print('RESET')
 
     def print(self, p):
-        print(p)
+        print('   ', p)
