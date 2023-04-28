@@ -1,6 +1,7 @@
 import sys
 sys.path.append('../src')
 from network_initialiser import NetworkInitialiser
+from access_point_options import AccessPointOptions
 
 class MockPicoWrapper:
     pass
@@ -38,7 +39,8 @@ class TestNetworkInitialiser:
         self.mock_wifi_connection = MockWiFiConnection()
         self.mock_access_point = MockAccessPoint()
         self.mock_program_options_reader = MockProgramOptionsReader()
-        self.initialiser = NetworkInitialiser('ssid', 'pwd', self.mock_pico_wrapper, self.mock_progress, self.mock_wifi_connection, self.mock_access_point, None, self.mock_program_options_reader)
+        options = AccessPointOptions('ssid', 'pwd')
+        self.initialiser = NetworkInitialiser(options, self.mock_pico_wrapper, self.mock_progress, self.mock_wifi_connection, self.mock_access_point, None, self.mock_program_options_reader)
 
     def test_if_the_options_file_is_not_found_the_access_point_is_launched(self):
         self.mock_program_options_reader.options = None

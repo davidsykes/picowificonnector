@@ -36,9 +36,7 @@ def when_displaying_the_access_point_the_ssid_and_password_can_be_supplied():
 
 def when_displaying_the_access_point_the_ssid_and_password_can_be_modified():
     print('Use different ssid and passwords')
-    w = MockPicoWrapper(None)
-    p = MockProgressIndicator()
-    c = NetworkInitialiser(w, p)
+    c,p = set_up_network_initialiser()
 
     parameters = { 'ssid': 'new ssid', 'password': 'new password' }
     c.initialise(parameters)

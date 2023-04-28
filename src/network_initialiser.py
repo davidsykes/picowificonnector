@@ -6,9 +6,8 @@ from url_parameters_extractor import UrlParametersExtractor
 from program_options_reader import ProgramOptionsReader
 
 class NetworkInitialiser:
-    def __init__(self, ssid = 'PICO', password = '12345678', pico_wrapper=None, progress=None, wifi_connector=None, access_point = None, parameters_extractor = None, program_options_reader = None):
-        self.ssid = ssid
-        self.password = password
+    def __init__(self, access_point_options=None, pico_wrapper=None, progress=None, wifi_connector=None, access_point = None, parameters_extractor = None, program_options_reader = None):
+        self.access_point_options = access_point_options
         self.pico_wrapper = pico_wrapper or PicoWrapper()
         self.progress = progress or ProgressIndicator()
         self.wifi_connector = wifi_connector or WiFiConnector(self.progress)
@@ -22,7 +21,6 @@ class NetworkInitialiser:
             ssid = options['ssid']
             password = options['password']
             self.pico_wrapper.log(''.join(['Attempting to connect to ', ssid, '-', password]))
-        #    enables is the ip address or none
             ip = self.wifi_connector.connect_wifi(ssid, password)
             if ip:
                 self.pico_wrapper.log(''.join(['Connected as ', ip, '.']))
