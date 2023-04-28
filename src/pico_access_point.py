@@ -13,12 +13,12 @@ HEAD_ACK = "<head><title>Parameters Accepted</title></head><body>"
 DIV = '<div style="height:120px;font-size:70pt">'
 
 class PicoAccessPoint:
-    def __init__(self, ssid, password, pico_wrapper, progress, parameters_extractor):
+    def __init__(self, ssid, password, pico_wrapper, progress, url_parameters_extractor):
         self.ssid = ssid
         self.password = password
         self.pico_wrapper = pico_wrapper
         self.progress = progress
-        self.parameters_extractor = parameters_extractor
+        self.url_parameters_extractor = url_parameters_extractor
 
     def launch(self):
         self.progress.set_progress(ProgressIndicator.INITIALISING_ACCESS_POINT)
@@ -41,7 +41,7 @@ class PicoAccessPoint:
             request = conn.recv(1024).decode()
             if request == 'reset':
                return
-            parameters = self.parameters_extractor.extract_parameters(request)
+            parameters = self.url_parameters_extractor.extract_parameters(request)
 
             if 'ssid' in parameters:
                 self.pico_wrapper.write_parameters_to_file(PROGRAM_OPTIONS_FILE, parameters)

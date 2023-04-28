@@ -12,7 +12,8 @@ class WLAN:
     def ifconfig(self):
         return ['ip address']
     def config(self, essid, password):
-        pass
+        WLAN.access_point_ssid = essid
+        WLAN.access_point_password = password
 
 class STA_IF:
     pass
