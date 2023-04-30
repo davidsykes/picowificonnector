@@ -4,12 +4,11 @@ import usocket
 sys.path.append('../src')
 from pico_access_point import PicoAccessPoint
 from constants import PROGRAM_OPTIONS_FILE
+from access_point_options import AccessPointOptions
 
 class MockPicoWrapper:
     def __init__(self):
         self.files = {}
-    def log(self, log):
-        pass        
     def write_parameters_to_file(self, path, parameters):
         params = ''
         for key, value in parameters.items():
@@ -36,10 +35,14 @@ class MockParametersExtractor:
 
 class TestPicoAccessPoint:
     def setup_method(self, test_method):
-        self.pico_wrapper = MockPicoWrapper()
-        self.mock_progress = MockProgress()
-        self.mock_parameters_extractor = MockParametersExtractor()
-        self.ap = PicoAccessPoint('PICO', '12345678', self.pico_wrapper, self.mock_progress, self.mock_parameters_extractor)
+        di = {}
+        di['ProgressIndicator'] = MockProgress()
+        access_point_options = AccessPointOptions()
+        di['PicoWrapper'] = MockPicoWrapper()
+        di['UrlParametersExtractor'] = MockParametersExtractor()
+        self.pico_wrapper = di['PicoWrapper']
+        self.mock_parameters_extractor = di['UrlParametersExtractor']
+        self.ap = PicoAccessPoint(di, access_point_options)
 
     def test_an_access_point_is_initialised(self):
         usocket.socket.http_requests = ['reset']

@@ -13,12 +13,12 @@ HEAD_ACK = "<head><title>Parameters Accepted</title></head><body>"
 DIV = '<div style="height:120px;font-size:70pt">'
 
 class PicoAccessPoint:
-    def __init__(self, ssid, password, pico_wrapper, progress, url_parameters_extractor):
-        self.ssid = ssid
-        self.password = password
-        self.pico_wrapper = pico_wrapper
-        self.progress = progress
-        self.url_parameters_extractor = url_parameters_extractor
+    def __init__(self, di, access_point_options):
+        self.ssid = access_point_options.ssid
+        self.password = access_point_options.password
+        self.pico_wrapper = di['PicoWrapper']
+        self.progress = di['ProgressIndicator']
+        self.url_parameters_extractor = di['UrlParametersExtractor']
 
     def launch(self):
         self.progress.set_progress(ProgressIndicator.INITIALISING_ACCESS_POINT)
