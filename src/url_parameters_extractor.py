@@ -22,7 +22,7 @@ class UrlParametersExtractor:
 
     def decode_percent(self, sdata):
         pieces = sdata.split('%')
-        sections = [pieces[0]]
+        sections = [pieces[0].replace('+', ' ')]
         for Item in pieces[1:]:
             code = Item[:2]
             char = chr(int(code, 16))

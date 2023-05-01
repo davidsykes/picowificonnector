@@ -53,3 +53,9 @@ class TestUrlParametersExtractor:
         parameters = self.extractor.extract_parameters(request)
         assert(parameters['option1'] == 'option 1')
         assert(parameters['option2'] == 'option 2')
+
+    def test_spaces_can_be_represented_by_plus_signs(self):
+        request = 'GET /?ssid=the_ssid&password=the_password&show=yo&option1=option+1&show=yo&option2=option+2&submit=Submit HTTP/1.1\r\nHost: 192.168.4.1\r\n'
+        parameters = self.extractor.extract_parameters(request)
+        assert(parameters['option1'] == 'option 1')
+        assert(parameters['option2'] == 'option 2')

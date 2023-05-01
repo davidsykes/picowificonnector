@@ -1,10 +1,11 @@
 class MockPicoWrapper:
-    def __init__(self, parameters):
-        self.parameters = parameters
+    def __init__(self, verbose):
+        self.verbose = verbose
         self.files = {}
+        self.options_file_data = None
 
     def read_file_data(self, path):
-        return self.parameters
+        return self.options_file_data
 
     def write_parameters_to_file(self, path, parameters):
         params = ''
@@ -13,10 +14,13 @@ class MockPicoWrapper:
         self.files[path] = params
 
     def log(self, log):
-        print('    log:', log)
+        if self.verbose:
+            print('    log:', log)
 
     def reset(self):
-        print('RESET')
+        if self.verbose:
+            print('RESET')
 
     def print(self, p):
-        print('   ', p)
+        if self.verbose:
+            print('   ', p)

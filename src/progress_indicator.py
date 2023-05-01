@@ -1,6 +1,7 @@
 from machine import Pin, Timer
 
 class ProgressIndicator:
+	LOOKING_FOR_EXISTING_DETAILS = 1
 	CONNECTING = 2
 	CONNECTED = 3
 	NETWORK_ERROR = 4
