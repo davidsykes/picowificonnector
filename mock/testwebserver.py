@@ -26,22 +26,19 @@ class MockPicoWrapper:
         pass
 
 class MockUrlParametersExtractor:
-    def __init__(self, ssid, password, show):
-        self.parameters = {}
-        if ssid is not None:
-            self.parameters['ssid'] = ssid
-        if password is not None:
-            self.parameters['password'] = password
-        if show:
-            self.parameters['show'] = show
+    def __init__(self, params):
+        self.parameters = params
     def extract_parameters(self, request):
         return self.parameters
 
 def set_up_url_parameters_to_show_input_form():
-    return MockUrlParametersExtractor(None, None, None)
+    return MockUrlParametersExtractor({})
 
-def set_up_url_parameters_with_ssid_and_password(show):
-    return MockUrlParametersExtractor('ssid', 'password', show)
+def set_up_url_parameters_with_ssid_and_password(include_show):
+    params = {'ssid': 'ssid', 'password': 'password', 'option1': 'the option data'}
+    if include_show:
+        params['show'] = 'y'
+    return MockUrlParametersExtractor(params)
 
 def create_access_point(url_parameters_to_extract):
     di = { 'PicoWrapper': MockPicoWrapper(), 'ProgressIndicator' : MockProgressIndicator(), 'UrlParametersExtractor' : url_parameters_to_extract, 'AccessPointFormCreator' : AccessPointFormCreator() }
