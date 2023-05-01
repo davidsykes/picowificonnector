@@ -4,6 +4,7 @@ import usocket
 sys.path.append('../src')
 from pico_access_point import PicoAccessPoint
 from constants import PROGRAM_OPTIONS_FILE
+from access_point_option import AccessPointOption
 from access_point_options import AccessPointOptions
 
 class MockPicoWrapper:
@@ -33,15 +34,20 @@ class MockParametersExtractor:
             return self.parameters
         return {}
 
+class MockAccessPointFormCreator:
+    def create_form(self, options):
+        return 'access point form ' + options[0].text
+
 class TestPicoAccessPoint:
     def setup_method(self, test_method):
         di = {}
         di['ProgressIndicator'] = MockProgress()
-        access_point_options = AccessPointOptions()
         di['PicoWrapper'] = MockPicoWrapper()
         di['UrlParametersExtractor'] = MockParametersExtractor()
+        di['AccessPointFormCreator'] = MockAccessPointFormCreator()
         self.pico_wrapper = di['PicoWrapper']
         self.mock_parameters_extractor = di['UrlParametersExtractor']
+        access_point_options = AccessPointOptions('ssid', 'password', [AccessPointOption('option1', 'option 1')])
         self.ap = PicoAccessPoint(di, access_point_options)
 
     def test_an_access_point_is_initialised(self):
@@ -49,15 +55,15 @@ class TestPicoAccessPoint:
         self.ap.launch()
 
         assert(network.WLAN.type == network.AP_IF)
-        assert(network.WLAN.essid == 'PICO')
-        assert(network.WLAN.password == '12345678')
+        assert(network.WLAN.essid == 'ssid')
+        assert(network.WLAN.password == 'password')
 
     def test_a_simple_request_gets_the_main_form(self):
         usocket.socket.http_requests = ['request', 'reset']
         self.ap.launch()
         
-        assert('<form style' in usocket.Connection.http_response)
-        assert('<head><title>SSID Input</title></head>' in usocket.Connection.http_response)
+        assert('access point form' in usocket.Connection.http_response)
+        assert('option 1' in usocket.Connection.http_response)
 
     def test_simple_parameters_are_stored(self):
         usocket.socket.http_requests = ['parameters', 'reset']

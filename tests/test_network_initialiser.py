@@ -45,6 +45,7 @@ class TestNetworkInitialiser:
         self.di['ProgramOptionsReader'] = self.mock_program_options_reader
         self.di['PicoAccessPoint'] = self.mock_access_point
         self.di['WiFiConnector'] = self.mock_wifi_connection
+        self.di['ProgressIndicator'] = self.mock_progress
         self.initialiser = NetworkInitialiser(self.mock_progress, self.di)
 
     def test_if_the_options_file_is_not_found_the_access_point_is_launched(self):

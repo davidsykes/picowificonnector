@@ -1,9 +1,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import sys
 sys.path.append('../src')
+from access_point_option import AccessPointOption
 from access_point_options import AccessPointOptions
 from pico_access_point import PicoAccessPoint
-from url_parameters_extractor import UrlParametersExtractor
+from access_point_form_creator import AccessPointFormCreator
 import usocket
 
 hostName = "localhost"
@@ -43,8 +44,9 @@ def set_up_url_parameters_with_ssid_and_password(show):
     return MockUrlParametersExtractor('ssid', 'password', show)
 
 def create_access_point(url_parameters_to_extract):
-    di = { 'PicoWrapper': MockPicoWrapper(), 'ProgressIndicator' : MockProgressIndicator(), 'UrlParametersExtractor' : url_parameters_to_extract }
-    ap = PicoAccessPoint(di, AccessPointOptions())
+    di = { 'PicoWrapper': MockPicoWrapper(), 'ProgressIndicator' : MockProgressIndicator(), 'UrlParametersExtractor' : url_parameters_to_extract, 'AccessPointFormCreator' : AccessPointFormCreator() }
+    option = AccessPointOption('option1', 'the option')
+    ap = PicoAccessPoint(di, AccessPointOptions('the ssid', 'the password', [option]))
     return ap
 
 class MyServer(BaseHTTPRequestHandler):
