@@ -7,12 +7,18 @@ class MockPicoWrapper:
         pass
 
 class TestUrlParametersExtractor:
-    def setup_method(self, test_method):
+    def setup_method(self, xtest_method):
         self.pico_wrapper = MockPicoWrapper()
         self.extractor = UrlParametersExtractor(self.pico_wrapper)
 
     def test_a_simple_request_returns_no_password(self):
         request = 'GET / HTTP/1.1\r\nHost: 192.168.4.1\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nUser-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 16_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.3 Mobile/15E148 Safari/604.1\r\nReferer: http://192.168.4.1/\r\nAccept-Language: en-GB,en;q=0.9\r\nAccept-Encoding: gzip, deflate\r\n\r\n'
+        parameters = self.extractor.extract_parameters(request)
+        assert('ssid' not in parameters)
+        assert('password' not in parameters)
+
+    def test_an_invalid_request_returns_no_password(self):
+        request = 'oops'
         parameters = self.extractor.extract_parameters(request)
         assert('ssid' not in parameters)
         assert('password' not in parameters)
@@ -39,6 +45,12 @@ class TestUrlParametersExtractor:
         
     def test_a_missing_request_returns_no_password(self):
         request = None
+        parameters = self.extractor.extract_parameters(request)
+        assert('ssid' not in parameters)
+        assert('password' not in parameters)
+        
+    def test_an_empty_request_returns_no_password(self):
+        request = ''
         parameters = self.extractor.extract_parameters(request)
         assert('ssid' not in parameters)
         assert('password' not in parameters)

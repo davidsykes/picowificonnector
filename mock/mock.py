@@ -70,7 +70,7 @@ def when_credentials_have_been_supplied_a_connection_is_made():
 
     options = c.initialise(AccessPointOptions())
 
-    assert(options['ip'] == '[ip address]')
+    assert(options['ip'] == 'ip address')
 
 first_call_no_ssid_information_exists()
 when_displaying_the_access_point_the_ssid_and_password_can_be_supplied()

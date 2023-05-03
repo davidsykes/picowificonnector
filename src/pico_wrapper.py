@@ -1,11 +1,10 @@
 from constants import LOG_FILE
 
 class PicoWrapper:
-    def read_parameters(self, path):
+    def read_file_data(self, path):
         try:
             file = open(path, 'r')
             content = file.read()
-            print('File content', content)
             file.close()
             return content
         except OSError:

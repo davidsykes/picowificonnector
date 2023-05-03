@@ -12,7 +12,7 @@ class NetworkInitialiser:
         self.di = self._initialise_dependency_injection(di, progress_indicator)
         self.program_options_reader = self.di['ProgramOptionsReader']
         self.pico_wrapper = self.di['PicoWrapper']
-        self.progress_indicator = di['ProgressIndicator']
+        self.progress_indicator = self.di['ProgressIndicator']
 
     def _initialise_dependency_injection(self, di, progress_indicator):
         di = di or {}
