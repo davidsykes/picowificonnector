@@ -15,6 +15,10 @@ class PicoWrapper:
         for key, value in parameters.items():
             file.write(''.join([key, '=', value, '\n']))
         file.close()
+
+    def delete_file(self, path):
+        import os
+        os.remove(path)
         
     def log(self, l, m=None):
         s = l + "\n" + ('' if m is None else (m + "\n"))
