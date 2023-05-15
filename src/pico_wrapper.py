@@ -1,3 +1,4 @@
+from machine import Pin
 from constants import LOG_FILE
 
 class PicoWrapper:

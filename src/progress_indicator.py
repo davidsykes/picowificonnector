@@ -59,3 +59,6 @@ class ProgressIndicator:
 		self.led.value(1)
 		self.flash_count = self.progress
 		self.off_count = 2
+
+	def stop(self):
+		self.timer.deinit()
