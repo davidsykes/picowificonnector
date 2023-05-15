@@ -13,7 +13,7 @@ class PicoWrapper:
     def write_parameters_to_file(self, path, parameters):
         file = open(path, 'w')
         for key, value in parameters.items():
-            file.write(''.join([key, '=', value]))
+            file.write(''.join([key, '=', value, '\n']))
         file.close()
         
     def log(self, l, m=None):
