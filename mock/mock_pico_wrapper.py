@@ -1,3 +1,15 @@
+from constants import RESET_PIN, PROGRAM_OPTIONS_FILE
+
+class MockPin:
+    reset_pin_value = 1
+    def __init__(self, number):
+        if number == RESET_PIN:
+            self._value = MockPin.reset_pin_value
+        else:
+            self._value = 1
+    def value(self):
+        return self._value
+
 class MockPicoWrapper:
     def __init__(self, verbose):
         self.verbose = verbose
@@ -24,3 +36,10 @@ class MockPicoWrapper:
     def print(self, p):
         if self.verbose:
             print('   ', p)
+
+    def create_input_pin_with_pullup(self, number):
+        return MockPin(number)
+    
+    def delete_file(self, path):
+        if path == PROGRAM_OPTIONS_FILE:
+            self.options_file_data = None

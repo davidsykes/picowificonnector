@@ -1,9 +1,9 @@
 import sys
 sys.path.append('../src')
 from network_initialiser import NetworkInitialiser
-from mock_pico_wrapper import MockPicoWrapper
+from mock_pico_wrapper import MockPicoWrapper, MockPin
 import usocket
-from constants import PROGRAM_OPTIONS_FILE
+from constants import PROGRAM_OPTIONS_FILE, RESET_PIN
 from access_point_option import AccessPointOption
 from access_point_options import AccessPointOptions
 from network import WLAN
@@ -19,7 +19,11 @@ def set_up_network_initialiser(verbose=False):
     indicator = MockProgressIndicator(pico)
     di = { 'PicoWrapper': pico, 'ProgressIndicator' : indicator }
     connection = NetworkInitialiser(indicator, di)
+    usocket.Connection.http_response = None
     return connection,pico
+
+def set_up_existing_passwordFile(p):
+    p.options_file_data = "ssid=ssid\npassword=password"
 
 def first_call_no_ssid_information_exists():
     print('No connection information exists')
@@ -31,7 +35,7 @@ def first_call_no_ssid_information_exists():
     assert(usocket.Connection.http_response[0:15] == "HTTP/1.0 200 OK")
 
 def when_displaying_the_access_point_the_ssid_and_password_can_be_supplied():
-    print('\nthe_access_point_is_created_and_the_parameters_supplied')
+    print('When displaying the access point the ssid and password can be supplied')
     c,p = set_up_network_initialiser()
     form_data = b'GET /?ssid=the_ssid&password=the_password&submit=Submit HTTP/1.1\r\nHost: 192.168.4.1\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nUser-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 16_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.3 Mobile/15E148 Safari/604.1\r\nReferer: http://192.168.4.1/\r\nAccept-Language: en-GB,en;q=0.9\r\nAccept-Encoding: gzip, deflate\r\n\r\n'
     usocket.socket.http_requests = [b'/', form_data, b'reset']
@@ -48,7 +52,6 @@ def when_displaying_the_access_point_the_ssid_and_password_can_be_modified():
     access_point_options = AccessPointOptions('new ssid', 'new password')
     c.initialise(access_point_options)
 
-    print('====', WLAN.access_point_ssid)
     assert(WLAN.access_point_ssid == 'new ssid')
     assert(WLAN.access_point_password == 'new password')
 
@@ -65,15 +68,27 @@ def when_displaying_the_access_point_when_an_extra_data_item_is_requested_it_is_
     assert(p.files['options.txt'] == "ssid=ssid\npassword=password\noption1=option 1+2\nsubmit=Submit\n")
 
 def when_credentials_have_been_supplied_a_connection_is_made():
-    c,p = set_up_network_initialiser(True)
-    p.options_file_data = "ssid=ssid\npassword=password"
+    print('Credentials supplied, a connection is made')
+    c,p = set_up_network_initialiser()
+    set_up_existing_passwordFile(p)
 
     options = c.initialise(AccessPointOptions())
 
     assert(options['ip'] == 'ip address')
+
+def when_credentials_have_been_supplied_but_pin_16_is_held_low_the_access_point_is_generated():
+    print('Credentials exist but pin 16 is held low')
+    c,p = set_up_network_initialiser()
+    set_up_existing_passwordFile(p)
+    usocket.socket.http_requests = [b'/',b'reset']
+    MockPin.reset_pin_value = 0
+    c.initialise()
+
+    assert(usocket.Connection.http_response[0:15] == "HTTP/1.0 200 OK")
 
 first_call_no_ssid_information_exists()
 when_displaying_the_access_point_the_ssid_and_password_can_be_supplied()
 when_displaying_the_access_point_the_ssid_and_password_can_be_modified()
 when_displaying_the_access_point_when_an_extra_data_item_is_requested_it_is_stored_in_the_data_file()
 when_credentials_have_been_supplied_a_connection_is_made()
+when_credentials_have_been_supplied_but_pin_16_is_held_low_the_access_point_is_generated()

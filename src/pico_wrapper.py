@@ -30,3 +30,6 @@ class PicoWrapper:
 
     def print(self, p):
         print(p)
+
+    def create_input_pin_with_pullup(self, number):
+        return Pin(number, Pin.IN, Pin.PULL_UP)
