@@ -1,14 +1,26 @@
 import sys
 sys.path.append('../src')
 from network_initialiser import NetworkInitialiser
-from access_point_options import AccessPointOptions
+from constants import RESET_PIN, PROGRAM_OPTIONS_FILE
+
+class MockPin:
+    def __init__(self, value):
+        self._value = value
+    def value(self):
+        return self._value
 
 class MockPicoWrapper:
-    pass
     def __init__(self):
         self.logs = []
+        self.deleted_file = None
+        self.reset_pin_value = True
     def log(self, log):
         self.logs.append(log)
+    def create_input_pin_with_pullup(self, pin_number):
+        if (pin_number == RESET_PIN):
+            return MockPin(self.reset_pin_value)
+    def delete_file(self, file_name):
+        self.deleted_file = file_name
     
 class MockProgress:
     timer_has_been_deinitialised = False
@@ -97,3 +109,13 @@ class TestNetworkInitialiser:
 
         assert(self.mock_access_point.access_point_launched == True)
         assert(self.mock_pico_wrapper.logs == ['Attempting to connect to the ssid-xxx','Connection failed.'])
+
+
+    def test_if_the_reset_pin_is_set_low_the_credentials_file_is_deleted(self):
+        self.mock_program_options_reader.options = {'ssid': 'the ssid', 'password': 'xxx', 'option1': 'option 1' }
+        self.mock_pico_wrapper.reset_pin_value = False
+
+        self.initialiser.initialise()
+
+        assert(self.mock_access_point.access_point_launched == True)
+        assert(self.mock_pico_wrapper.deleted_file == PROGRAM_OPTIONS_FILE)
