@@ -11,8 +11,11 @@ class MockPicoWrapper:
         self.logs.append(log)
     
 class MockProgress:
+    timer_has_been_deinitialised = False
     def set_progress(self, message):
         pass
+    def stop(self):
+        self.timer_has_been_deinitialised = True
 
 class MockWiFiConnection:
     def __init__(self):
@@ -79,6 +82,13 @@ class TestNetworkInitialiser:
         options = self.initialiser.initialise()
 
         assert(options['ip'] == 'the ip address')
+
+    def test_if_the_connection_succeeds_the_timer_is_deinitialised(self):
+        self.mock_program_options_reader.options = {'ssid': 'the ssid', 'password': '12345678', 'option1': 'option 1' }
+
+        options = self.initialiser.initialise()
+
+        assert(self.mock_progress.timer_has_been_deinitialised)
 
     def test_if_the_network_intialisation_fails_the_access_point_is_launched(self):
         self.mock_program_options_reader.options = {'ssid': 'the ssid', 'password': 'xxx', 'option1': 'option 1' }
