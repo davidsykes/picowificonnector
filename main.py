@@ -1,6 +1,6 @@
 from network_initialiser import NetworkInitialiser, AccessPointOptions
 
-access_point_options = AccessPointOptions('picossid', '123456789')
+access_point_options = AccessPointOptions('pico', '12345678')
 values = NetworkInitialiser().initialise(access_point_options)
 
 ip = values['ip']

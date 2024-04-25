@@ -5,20 +5,22 @@ except:
 import network            #importing network
 import gc
 
-def ap():
+def ap3(ssid, password):
  gc.collect()
- ssid = 'RPI_PICO_AP'                  #Set access point name 
- password = '12345678'      #Set your access point password
-
+# ssid = 'RPI_PICO1'                  #Set access point name 
+# password = '12345678'      #Set your access point password
 
  ap = network.WLAN(network.AP_IF)
  ap.config(essid=ssid, password=password)
- ap.active(True)            #activating
+ ap.active(True)
 
  while ap.active() == False:
    pass
  print('Connection is successful')
  print(ap.ifconfig())
+
+def ap2():
+ ap3()
 
  s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   #creating socket object
  s.bind(('', 80))
