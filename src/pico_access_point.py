@@ -24,7 +24,7 @@ class PicoAccessPoint:
         self.progress.set_progress(ProgressIndicator.INITIALISING_ACCESS_POINT)
 
         from ap import ap3
-        ap3()
+        ap3(self.ssid, self.password)
 
 
 #        gc.collect()
