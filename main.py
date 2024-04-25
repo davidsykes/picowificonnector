@@ -1,11 +1,9 @@
-from network_initialiser import NetworkInitialiser
+from network_initialiser import NetworkInitialiser, AccessPointOptions
 
-options = {}
-options['ssid'] = 'pico ssid'
-options['password'] = '123456789'
-options['options'] = [{'name': 'option1', 'text': 'option 1'},{'name': 'option2', 'text': 'option 2'}]
+access_point_options = AccessPointOptions('pico ssid', '123456789')
+#options['options'] = [{'name': 'option1', 'text': 'option 1'},{'name': 'option2', 'text': 'option 2'}]
 
-values = NetworkInitialiser().initialise(options)
+values = NetworkInitialiser().initialise(access_point_options)
 
 ip = values['ip']
 option1 = values['option1']

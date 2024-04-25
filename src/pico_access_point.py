@@ -22,14 +22,23 @@ class PicoAccessPoint:
 
     def launch(self):
         self.progress.set_progress(ProgressIndicator.INITIALISING_ACCESS_POINT)
-        gc.collect()
-        ap = network.WLAN(network.AP_IF)
-        ap.config(essid=self.ssid, password=self.password)
-        ap.active(True)
 
-        while ap.active() == False:
-            pass
-        self.pico_wrapper.print('Connection is successful: %s' % str(ap.ifconfig()))
+        from ap import ap3
+        ap3()
+
+
+#        gc.collect()
+#        ssid = 'RPI_PI'                  #Set access point name 
+#        password = '12345678'      #Set your access point password
+#        ap = network.WLAN(network.AP_IF)
+#        ap.config(essid=ssid, password=password)
+#        ap.active(True)            #activating
+#
+#        while ap.active() == False:
+#          pass
+#        print('Connection is successful')
+#
+#        self.pico_wrapper.print('Connection is successful: %s' % str(ap.ifconfig()))
         self.progress.set_progress(ProgressIndicator.ACCESS_POINT_READY)
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
